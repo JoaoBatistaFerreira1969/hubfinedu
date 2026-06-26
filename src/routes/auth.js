@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const passport = require('../auth/oauth2');
 const { isLoggedIn } = require('../middleware/auth');
+const { sendLoginConfirmation } = require('../services/email');
 
 const router = Router();
 
@@ -10,7 +11,12 @@ router.get('/google', passport.authenticate('google', {
 
 router.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
-  (req, res) => {
+  async (req, res) => {
+    try {
+      await sendLoginConfirmation(req.user);
+    } catch (err) {
+      console.error('Erro ao enviar email de confirmação:', err.message);
+    }
     res.redirect('/dashboard');
   }
 );

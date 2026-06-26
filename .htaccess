@@ -1,0 +1,12 @@
+DirectoryIndex index.html
+
+RewriteEngine On
+
+# Rotas do Express → proxy para Node.js (porta 3000)
+RewriteRule ^auth/(.*) http://localhost:3000/auth/$1 [P,L]
+RewriteRule ^login$ http://localhost:3000/login [P,L]
+RewriteRule ^dashboard$ http://localhost:3000/dashboard [P,L]
+
+# Forçar HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]

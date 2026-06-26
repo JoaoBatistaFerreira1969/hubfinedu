@@ -26,11 +26,11 @@ app.get('/dashboard', (req, res) => {
   if (!req.isAuthenticated()) {
     return res.redirect('/');
   }
-  res.sendFile(path.join(__dirname, 'site', 'dashboard.html'));
+  res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'site', 'login.html'));
+  res.sendFile(path.join(__dirname, 'login.html'));
 });
 
 app.listen(PORT, () => {
