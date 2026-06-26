@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
+  fetch('/auth/status')
+    .then(r => r.json())
+    .then(data => {
+      const navAuth = document.getElementById('nav-auth');
+      if (data.authenticated && navAuth) {
+        navAuth.innerHTML = `<a href="/dashboard" class="nav-btn" style="background:var(--accent-2);color:var(--primary)">Painel</a>`;
+      }
+    })
+    .catch(() => {});
   const toggle = document.getElementById('mobile-toggle');
   const navLinks = document.getElementById('nav-links');
 
