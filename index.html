@@ -60,32 +60,104 @@
           </div>
         </div>
         <div class="hero-image">
-          <svg viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="40" y="60" width="420" height="280" rx="20" fill="url(#bg-grad)" opacity="0.3"/>
-            <rect x="60" y="80" width="180" height="120" rx="12" fill="white" opacity="0.95"/>
-            <rect x="260" y="80" width="180" height="120" rx="12" fill="white" opacity="0.95"/>
-            <rect x="60" y="220" width="380" height="90" rx="12" fill="white" opacity="0.95"/>
-            <circle cx="80" cy="245" r="8" fill="#3b82f6"/>
-            <rect x="95" y="238" width="120" height="6" rx="3" fill="#0f172a" opacity="0.2"/>
-            <rect x="95" y="252" width="80" height="6" rx="3" fill="#f59e0b" opacity="0.6"/>
-            <rect x="95" y="268" width="200" height="6" rx="3" fill="#0f172a" opacity="0.1"/>
-            <rect x="140" y="110" width="80" height="8" rx="4" fill="#0f172a" opacity="0.15"/>
-            <rect x="140" y="130" width="60" height="8" rx="4" fill="#3b82f6" opacity="0.5"/>
-            <rect x="140" y="150" width="70" height="8" rx="4" fill="#f59e0b" opacity="0.5"/>
-            <rect x="140" y="170" width="40" height="8" rx="4" fill="#0f172a" opacity="0.1"/>
-            <rect x="340" y="110" width="80" height="8" rx="4" fill="#0f172a" opacity="0.15"/>
-            <rect x="340" y="130" width="60" height="8" rx="4" fill="#3b82f6" opacity="0.5"/>
-            <rect x="340" y="150" width="70" height="8" rx="4" fill="#f59e0b" opacity="0.5"/>
-            <rect x="340" y="170" width="40" height="8" rx="4" fill="#0f172a" opacity="0.1"/>
-            <text x="250" y="295" text-anchor="middle" font-family="system-ui" font-size="12" fill="#3b82f6" font-weight="600">Evolução Financeira</text>
-            <path d="M245 290 L250 280 L255 290" fill="#f59e0b"/>
-            <defs>
-              <linearGradient id="bg-grad" x1="0" y1="0" x2="500" y2="400">
-                <stop stop-color="#3b82f6"/>
-                <stop offset="1" stop-color="#f59e0b"/>
-              </linearGradient>
-            </defs>
-          </svg>
+          <a href="#" class="hero-image-link" aria-label="Agendar Sessão">
+            <svg viewBox="0 0 500 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="bg-grad" x1="0" y1="0" x2="500" y2="420">
+                  <stop stop-color="#3b82f6"/>
+                  <stop offset="1" stop-color="#f59e0b"/>
+                </linearGradient>
+                <linearGradient id="card-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop stop-color="#ffffff"/>
+                  <stop offset="1" stop-color="#f8fafc"/>
+                </linearGradient>
+                <filter id="shadow-card">
+                  <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.08"/>
+                </filter>
+                <filter id="shadow-cal">
+                  <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000" flood-opacity="0.12"/>
+                </filter>
+              </defs>
+
+              <!-- Background card -->
+              <rect x="30" y="50" width="440" height="320" rx="24" fill="url(#bg-grad)" opacity="0.25" filter="url(#shadow-card)"/>
+
+              <!-- Card Esquerdo: Calendário -->
+              <g filter="url(#shadow-cal)">
+                <rect x="50" y="70" width="180" height="160" rx="16" fill="white" opacity="0.98"/>
+                <!-- Topo calendário -->
+                <rect x="50" y="70" width="180" height="44" rx="16" fill="#3b82f6"/>
+                <rect x="50" y="98" width="180" height="16" fill="#3b82f6"/>
+                <text x="140" y="100" text-anchor="middle" font-family="system-ui" font-size="11" fill="white" font-weight="700">JUNHO 2026</text>
+                <!-- Dias -->
+                <text x="65" y="130" font-family="system-ui" font-size="10" fill="#94a3b8" font-weight="600">DOM</text>
+                <text x="95" y="130" font-family="system-ui" font-size="10" fill="#94a3b8" font-weight="600">SEG</text>
+                <text x="125" y="130" font-family="system-ui" font-size="10" fill="#94a3b8" font-weight="600">TER</text>
+                <text x="155" y="130" font-family="system-ui" font-size="10" fill="#94a3b8" font-weight="600">QUA</text>
+                <text x="185" y="130" font-family="system-ui" font-size="10" fill="#94a3b8" font-weight="600">QUI</text>
+                <text x="215" y="130" font-family="system-ui" font-size="10" fill="#94a3b8" font-weight="600">SEX</text>
+                <text x="65" y="150" font-family="system-ui" font-size="11" fill="#64748b">1</text>
+                <text x="95" y="150" font-family="system-ui" font-size="11" fill="#64748b">2</text>
+                <circle cx="125" cy="146" r="8" fill="#f59e0b" opacity="0.2"/>
+                <text x="125" y="150" font-family="system-ui" font-size="11" fill="#d97706" font-weight="700" text-anchor="middle">3</text>
+                <text x="155" y="150" font-family="system-ui" font-size="11" fill="#64748b">4</text>
+                <text x="185" y="150" font-family="system-ui" font-size="11" fill="#64748b">5</text>
+                <rect x="209" y="142" width="14" height="14" rx="4" fill="#3b82f6"/>
+                <text x="216" y="153" font-family="system-ui" font-size="10" fill="white" font-weight="700" text-anchor="middle">6</text>
+                <text x="65" y="170" font-family="system-ui" font-size="11" fill="#64748b">7</text>
+                <text x="95" y="170" font-family="system-ui" font-size="11" fill="#64748b">8</text>
+                <circle cx="125" cy="166" r="8" fill="#3b82f6" opacity="0.15"/>
+                <text x="125" y="170" font-family="system-ui" font-size="11" fill="#3b82f6" font-weight="700" text-anchor="middle">9</text>
+                <text x="155" y="170" font-family="system-ui" font-size="11" fill="#64748b">10</text>
+                <text x="185" y="170" font-family="system-ui" font-size="11" fill="#64748b">11</text>
+                <text x="215" y="170" font-family="system-ui" font-size="11" fill="#64748b">12</text>
+              </g>
+
+              <!-- Card Direito: gráfico -->
+              <g filter="url(#shadow-cal)">
+                <rect x="260" y="70" width="190" height="160" rx="16" fill="white" opacity="0.98"/>
+                <rect x="278" y="92" width="80" height="6" rx="3" fill="#0f172a" opacity="0.15"/>
+                <rect x="278" y="106" width="50" height="6" rx="3" fill="#3b82f6" opacity="0.4"/>
+                <!-- Bar chart -->
+                <rect x="278" y="130" width="16" height="50" rx="4" fill="#3b82f6" opacity="0.3"/>
+                <rect x="302" y="120" width="16" height="60" rx="4" fill="#3b82f6" opacity="0.5"/>
+                <rect x="326" y="140" width="16" height="40" rx="4" fill="#3b82f6" opacity="0.3"/>
+                <rect x="350" y="110" width="16" height="70" rx="4" fill="#f59e0b" opacity="0.7"/>
+                <rect x="374" y="125" width="16" height="55" rx="4" fill="#3b82f6" opacity="0.5"/>
+                <line x1="276" y1="195" x2="395" y2="195" stroke="#e2e8f0" stroke-width="1"/>
+                <circle cx="310" cy="120" r="3" fill="#3b82f6"/>
+                <path d="M306 120 L310 112 L314 120" fill="#3b82f6"/>
+                <text x="310" y="108" text-anchor="middle" font-family="system-ui" font-size="8" fill="#3b82f6" font-weight="600">+18%</text>
+              </g>
+
+              <!-- Card Inferior: informações -->
+              <g filter="url(#shadow-cal)">
+                <rect x="50" y="250" width="400" height="95" rx="16" fill="white" opacity="0.98"/>
+                <!-- Avatar -->
+                <circle cx="80" cy="280" r="16" fill="url(#bg-grad)"/>
+                <text x="80" y="285" text-anchor="middle" font-family="system-ui" font-size="10" fill="white" font-weight="700">JF</text>
+                <text x="105" y="276" font-family="system-ui" font-size="13" fill="#0f172a" font-weight="700">Mentoria CPA</text>
+                <text x="105" y="294" font-family="system-ui" font-size="11" fill="#64748b">João B. Ferreira</text>
+                <rect x="290" y="266" width="70" height="22" rx="20" fill="#f59e0b" opacity="0.15"/>
+                <text x="325" y="281" text-anchor="middle" font-family="system-ui" font-size="10" fill="#d97706" font-weight="700">Agendar</text>
+                <rect x="370" y="266" width="60" height="22" rx="20" fill="#3b82f6"/>
+                <text x="400" y="281" text-anchor="middle" font-family="system-ui" font-size="10" fill="white" font-weight="700">▶</text>
+                <!-- Calendário inline -->
+                <rect x="105" y="306" width="14" height="14" rx="3" fill="#3b82f6" opacity="0.15"/>
+                <text x="112" y="317" text-anchor="middle" font-family="system-ui" font-size="8" fill="#3b82f6" font-weight="700">25</text>
+                <text x="125" y="317" font-family="system-ui" font-size="10" fill="#64748b">Sessão: 14:00 - 15:30</text>
+              </g>
+
+              <!-- Badge flutuante "Disponível" -->
+              <g>
+                <rect x="420" y="55" width="40" height="20" rx="10" fill="#22c55e"/>
+                <circle cx="435" cy="65" r="3" fill="white"/>
+              </g>
+
+              <!-- Seta indicativa -->
+              <path d="M260 100 L290 100" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.5"/>
+            </svg>
+          </a>
         </div>
       </div>
     </div>
@@ -137,7 +209,7 @@
         <div class="feature-card">
           <div class="feature-icon">🎓</div>
           <h3>Conteúdo Especializado</h3>
-          <p>Material desenvolvido por profissionais certificados do mercado financeiro.</p>
+          <p>Material desenvolvido fundamentado no Programa Detalhado da ANBIMA, além de conteúdo acadêmico em Gestão Financeira.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">💬</div>
