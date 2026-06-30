@@ -28,16 +28,16 @@ async function sendLoginConfirmation(user) {
         <div style="background:#fff;padding:32px;border:1px solid #e2e8f0;border-top:0;border-radius:0 0 12px 12px">
           <h2 style="color:#0f172a;margin-top:0">Login confirmado</h2>
           <p style="color:#475569;font-size:15px;line-height:1.6">
-            Olá <strong>${user.name}</strong>,<br><br>
+            Ol\u00e1 <strong>${user.name}</strong>,<br><br>
             Seu login na plataforma ${appName} foi realizado com sucesso usando sua conta Google.<br><br>
             <strong>Detalhes do acesso:</strong><br>
-            • Email: ${user.email}<br>
-            • Data: ${new Date().toLocaleString('pt-BR')}<br><br>
-            Se não foi você, responda a este email imediatamente.
+            \u2022 Email: ${user.email}<br>
+            \u2022 Data: ${new Date().toLocaleString('pt-BR')}<br><br>
+            Se n\u00e3o foi voc\u00ea, responda a este email imediatamente.
           </p>
           <hr style="border:0;border-top:1px solid #e2e8f0;margin:24px 0">
           <p style="color:#94a3b8;font-size:13px;text-align:center">
-            ${appName} — Plataforma de Educação Financeira
+            ${appName} \u2014 Plataforma de Educa\u00e7\u00e3o Financeira
           </p>
         </div>
       </div>
@@ -45,4 +45,45 @@ async function sendLoginConfirmation(user) {
   });
 }
 
-module.exports = { sendLoginConfirmation };
+async function sendConfirmationEmail(user, token) {
+  const transporter = createTransporter();
+  const appName = 'HuB Finedu';
+  const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+  const confirmLink = `${baseUrl}/auth/confirm?token=${token}`;
+  const tempPassword = user.username + '@T' + Math.random().toString(36).slice(2, 6);
+
+  await transporter.sendMail({
+    from: `"${appName}" <${process.env.SMTP_FROM}>`,
+    to: user.email,
+    subject: `Confirma\u00e7\u00e3o de conta - ${appName}`,
+    html: `
+      <div style="max-width:600px;margin:0 auto;font-family:Arial,sans-serif">
+        <div style="background:linear-gradient(135deg,#3b82f6,#f59e0b);padding:24px;text-align:center;border-radius:12px 12px 0 0">
+          <h1 style="color:#fff;margin:0;font-size:24px">${appName}</h1>
+        </div>
+        <div style="background:#fff;padding:32px;border:1px solid #e2e8f0;border-top:0;border-radius:0 0 12px 12px">
+          <h2 style="color:#0f172a;margin-top:0">Confirma\u00e7\u00e3o de conta</h2>
+          <p style="color:#475569;font-size:15px;line-height:1.6">
+            Ol\u00e1!<br><br>
+            Uma nova conta foi criada em '<strong>${appName}</strong>' usando seu endere\u00e7o de e-mail.<br><br>
+            Para confirmar sua nova conta, acesse o seguinte endere\u00e7o:<br><br>
+            <a href="${confirmLink}" style="color:#3b82f6;font-size:14px">${confirmLink}</a><br><br>
+            Na maioria dos programas de E-mail isso deve aparecer como um link azul que voc\u00ea pode simplesmente clicar. Se isto n\u00e3o funcionar, copie e cole este link na barra de endere\u00e7os do seu navegador.<br><br>
+            <strong>Senha para acessar o per\u00edodo de "TESTE" no AVA por 7 dias:</strong><br>
+            <div style="background:#f8fafc;padding:12px 16px;border-radius:8px;font-family:monospace;font-size:16px;text-align:center;margin:8px 0">${tempPassword}</div><br>
+            Lembre-se que seus dados ser\u00e3o exclu\u00eddos em 30 dias, contados do t\u00e9rmino do TESTE no AVA, caso n\u00e3o fa\u00e7a "aquisi\u00e7\u00e3o" do acesso ao AVA real de ESTUDO.<br><br>
+            Se precisar de ajuda, contate o administrador do site.<br><br>
+            Atenciosamente,<br>
+            <strong>Suporte ${appName}</strong>
+          </p>
+          <hr style="border:0;border-top:1px solid #e2e8f0;margin:24px 0">
+          <p style="color:#94a3b8;font-size:13px;text-align:center">
+            ${appName} \u2014 Plataforma de Educa\u00e7\u00e3o Financeira
+          </p>
+        </div>
+      </div>
+    `
+  });
+}
+
+module.exports = { sendLoginConfirmation, sendConfirmationEmail };

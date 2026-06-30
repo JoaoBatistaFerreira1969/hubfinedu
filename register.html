@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criar Conta - HuB Finedu</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .register-page {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      padding: 40px 20px;
+    }
+    .register-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 40px;
+      max-width: 640px;
+      width: 100%;
+      margin: 0 auto;
+      box-shadow: var(--shadow-lg);
+    }
+    .register-card h1 {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+      color: var(--primary);
+      text-align: center;
+    }
+    .register-card > p {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .form-section {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .form-section:last-of-type {
+      border-bottom: none;
+    }
+    .form-section h2 {
+      font-size: 1.1rem;
+      color: #0f172a;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-section h2 .badge {
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-grid .full {
+      grid-column: 1 / -1;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+    }
+    .form-group label .required {
+      color: #ef4444;
+    }
+    .form-group input {
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      outline: none;
+      font-family: inherit;
+    }
+    .form-group input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+    .form-group .hint {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+    .captcha-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 8px;
+    }
+    .captcha-box input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .captcha-box .captcha-text {
+      flex: 1;
+      font-size: 0.9rem;
+      color: #334155;
+    }
+    .captcha-box .captcha-logo {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-align: right;
+      line-height: 1.3;
+    }
+    .captcha-box .captcha-logo strong {
+      color: #475569;
+      font-size: 0.85rem;
+    }
+    .captcha-info {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      background: #f0f9ff;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: #475569;
+    }
+    .captcha-info .icon-help {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #22c55e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.7rem;
+      margin-top: 1px;
+      cursor: pointer;
+    }
+    .captcha-info .icon-help:hover + .captcha-tooltip,
+    .captcha-info .icon-help:focus + .captcha-tooltip {
+      display: block;
+    }
+    .captcha-tooltip {
+      display: none;
+      position: absolute;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      box-shadow: var(--shadow-lg);
+      font-size: 0.8rem;
+      color: #475569;
+      max-width: 360px;
+      z-index: 10;
+      margin-top: 4px;
+    }
+    .agreement {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .agreement input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+      cursor: pointer;
+    }
+    .agreement label {
+      font-size: 0.9rem;
+      color: #334155;
+      cursor: pointer;
+    }
+    .agreement label a {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+    .register-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .register-actions .btn {
+      flex: 1;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 50px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+      text-decoration: none;
+      border: none;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: var(--accent-1-hover, #2563eb);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: #64748b;
+      border: 1.5px solid #e2e8f0;
+    }
+    .btn-secondary:hover {
+      border-color: #94a3b8;
+      color: #334155;
+    }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .required-note {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-top: 12px;
+    }
+    .required-note .icon-warn {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.65rem;
+    }
+    .form-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .form-success {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #16a34a;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .password-strength {
+      height: 4px;
+      border-radius: 2px;
+      background: #e2e8f0;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+    .password-strength .bar {
+      height: 100%;
+      width: 0;
+      border-radius: 2px;
+      transition: width 0.3s, background 0.3s;
+    }
+    @media (max-width: 600px) {
+      .register-card { padding: 24px 20px; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="register-page">
+    <div class="register-card">
+      <a href="/" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;margin-bottom:24px">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="15" fill="url(#logo-grad)"/>
+          <path d="M10 20V12l6-4 6 4v8l-6 4-6-4z" fill="white" opacity="0.9"/>
+          <path d="M16 12v8M12 16h8" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/>
+          <defs><linearGradient id="logo-grad" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#3b82f6"/><stop offset="1" stop-color="#f59e0b"/></linearGradient></defs>
+        </svg>
+        <span style="font-size:1.2rem;font-weight:800;color:var(--primary)">HuB <span style="color:var(--secondary)">Finedu</span></span>
+      </a>
+
+      <h1>Criar Nova Conta</h1>
+      <p>Preencha os dados abaixo para criar sua conta e acessar o AVA</p>
+
+      <div class="form-error" id="form-error"></div>
+      <div class="form-success" id="form-success"></div>
+
+      <form id="register-form" novalidate>
+        <div class="form-section">
+          <h2><span class="badge">1</span> Dados Cadastrais</h2>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label>Identifica\u00e7\u00e3o de usu\u00e1rio <span class="required">*</span></label>
+              <input type="text" id="username" name="username" required minlength="3" placeholder="Seu nome de usu\u00e1rio">
+            </div>
+            <div class="form-group full">
+              <label>Senha <span class="required">*</span></label>
+              <input type="password" id="password" name="password" required placeholder="Crie uma senha segura">
+              <div class="password-strength"><div class="bar" id="password-bar"></div></div>
+              <span class="hint">M\u00ednimo 8 caracteres, 1 d\u00edgito, 1 mai\u00fascula, 1 min\u00fascula, 1 caractere especial (*, -, #, etc.)</span>
+            </div>
+            <div class="form-group full">
+              <label>Endere\u00e7o de e-mail <span class="required">*</span></label>
+              <input type="email" id="email" name="email" required placeholder="seu@email.com">
+            </div>
+            <div class="form-group full">
+              <label>Confirmar endere\u00e7o de e-mail <span class="required">*</span></label>
+              <input type="email" id="confirmEmail" name="confirmEmail" required placeholder="Confirme seu email">
+            </div>
+            <div class="form-group">
+              <label>Nome <span class="required">*</span></label>
+              <input type="text" id="name" name="name" required placeholder="Seu nome">
+            </div>
+            <div class="form-group">
+              <label>Sobrenome <span class="required">*</span></label>
+              <input type="text" id="surname" name="surname" required placeholder="Seu sobrenome">
+            </div>
+            <div class="form-group">
+              <label>Munic\u00edpio/Estado <span class="required">*</span></label>
+              <input type="text" id="city" name="city" required placeholder="Ex: S\u00e3o Paulo/SP">
+            </div>
+            <div class="form-group">
+              <label>Telefone <span class="required">*</span></label>
+              <input type="tel" id="phone" name="phone" required placeholder="(11) 99999-9999">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2><span class="badge">2</span> Dados para Compra</h2>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label>CPF</label>
+              <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00">
+              <span class="hint">Opcional no cadastro inicial</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2><span class="badge">3</span> Verifica\u00e7\u00e3o de Seguran\u00e7a</h2>
+          <div class="captcha-box">
+            <input type="checkbox" id="captcha" name="captcha" required>
+            <div class="captcha-text">N\u00e3o sou um rob\u00f4</div>
+            <div class="captcha-logo">
+              <strong>reCAPTCHA</strong><br>
+              Privacidade - Termos
+            </div>
+          </div>
+          <div style="position:relative">
+            <div class="captcha-info">
+              <span class="icon-help" tabindex="0" id="help-icon">?</span>
+              <span>O CAPTCHA \u00e9 para evitar abusos de programas automatizados.</span>
+            </div>
+            <div class="captcha-tooltip" id="captcha-tooltip">
+              Siga as instru\u00e7\u00f5es para verificar se voc\u00ea \u00e9 uma pessoa. Pode ser uma caixa para verificar, caracteres apresentados em uma imagem que voc\u00ea deve inserir ou um conjunto de imagens para selecionar.<br><br>
+              Se n\u00e3o tiver certeza de quais s\u00e3o as imagens, tente outro CAPTCHA ou um CAPTCHA de \u00e1udio.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2><span class="badge">4</span> Acordo de Pol\u00edtica do Site</h2>
+          <div class="agreement">
+            <input type="checkbox" id="agree" name="agree" required>
+            <label for="agree">Eu compreendo e concordo com os <a href="#" target="_blank">Termos de Uso</a> e <a href="#" target="_blank">Pol\u00edtica de Privacidade</a> do site.</label>
+          </div>
+
+          <div class="register-actions">
+            <button type="submit" class="btn btn-primary" id="submit-btn">Criar minha conta</button>
+            <a href="/" class="btn btn-secondary">Cancelar</a>
+          </div>
+
+          <div class="required-note">
+            <span class="icon-warn">!</span>
+            Campos obrigat\u00f3rios
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('help-icon').addEventListener('click', function() {
+      const tooltip = document.getElementById('captcha-tooltip');
+      tooltip.style.display = tooltip.style.display === 'block' ? 'none' : 'block';
+    });
+    document.addEventListener('click', function(e) {
+      if (!document.querySelector('.captcha-info').contains(e.target)) {
+        document.getElementById('captcha-tooltip').style.display = 'none';
+      }
+    });
+
+    const passwordInput = document.getElementById('password');
+    const passwordBar = document.getElementById('password-bar');
+    passwordInput.addEventListener('input', function() {
+      const val = this.value;
+      let score = 0;
+      if (val.length >= 8) score++;
+      if (/[a-z]/.test(val)) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/\d/.test(val)) score++;
+      if (/[^a-zA-Z0-9]/.test(val)) score++;
+      const pct = (score / 5) * 100;
+      passwordBar.style.width = pct + '%';
+      if (score <= 2) passwordBar.style.background = '#ef4444';
+      else if (score <= 3) passwordBar.style.background = '#f59e0b';
+      else if (score === 4) passwordBar.style.background = '#3b82f6';
+      else passwordBar.style.background = '#22c55e';
+    });
+
+    document.getElementById('register-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const errorDiv = document.getElementById('form-error');
+      const successDiv = document.getElementById('form-success');
+      const submitBtn = document.getElementById('submit-btn');
+      errorDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+
+      if (!document.getElementById('agree').checked) {
+        errorDiv.textContent = 'Voc\u00ea precisa concordar com os Termos de Uso e Pol\u00edtica de Privacidade.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Criando...';
+
+      try {
+        const res = await fetch('/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value,
+            email: document.getElementById('email').value,
+            confirmEmail: document.getElementById('confirmEmail').value,
+            name: document.getElementById('name').value,
+            surname: document.getElementById('surname').value,
+            city: document.getElementById('city').value,
+            phone: document.getElementById('phone').value,
+            cpf: document.getElementById('cpf').value
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          successDiv.textContent = data.message;
+          successDiv.style.display = 'block';
+          document.getElementById('register-form').reset();
+          passwordBar.style.width = '0';
+        } else {
+          errorDiv.textContent = data.error || 'Erro ao criar conta.';
+          errorDiv.style.display = 'block';
+        }
+      } catch (err) {
+        errorDiv.textContent = 'Erro de conex\u00e3o. Tente novamente.';
+        errorDiv.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Criar minha conta';
+      }
+    });
+  </script>
+</body>
+</html>
