@@ -1,11 +1,28 @@
-DirectoryIndex index.html
+DirectoryIndex index.php
 
 RewriteEngine On
 
-# Forçar HTTPS
+# Forcar HTTPS
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
-# Rotas da API → proxy para Node.js (porta 3000)
-# Apenas /auth/* precisa do Node.js; login, register, dashboard são servidos como estáticos
-RewriteRule ^auth/(.*) http://localhost:3000/auth/$1 [P,L]
+# Clean URLs — paginas
+RewriteRule ^login$ login.php [L]
+RewriteRule ^register$ register.php [L]
+RewriteRule ^dashboard$ dashboard.php [L]
+
+# Clean URLs — auth handlers
+RewriteRule ^auth/status$ auth/status.php [L]
+RewriteRule ^auth/logout$ auth/logout.php [L]
+RewriteRule ^auth/register$ auth/register.php [L]
+RewriteRule ^auth/confirm$ auth/confirm.php [L]
+RewriteRule ^auth/google$ auth/google.php [L]
+RewriteRule ^auth/google/callback$ auth/google_callback.php [L]
+
+# Remove .php da URL (opcional)
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+# CSS, JS, assets — servir diretamente
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]

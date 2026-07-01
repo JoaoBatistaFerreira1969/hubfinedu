@@ -1,0 +1,130 @@
+<?php
+require_once 'includes/session.php';
+requireAuth();
+$user = getUser();
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - HuB Finedu</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .dashboard-page {
+      min-height: 100vh;
+      background: var(--bg-light);
+    }
+    .dash-header {
+      background: var(--primary);
+      color: var(--white);
+      padding: 20px 0;
+    }
+    .dash-header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dash-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .dash-user img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .dash-user span {
+      font-weight: 600;
+    }
+    .dash-main {
+      padding: 60px 0;
+    }
+    .dash-main h1 {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+    .dash-main p {
+      color: #64748b;
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+    }
+    .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .dash-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+    .dash-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    .dash-card p {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-bottom: 0;
+    }
+    .btn-logout {
+      padding: 8px 20px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    .btn-logout:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--accent-2);
+    }
+    @media (max-width: 768px) {
+      .dash-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="dash-header">
+    <div class="container">
+      <a href="/" class="logo">HuB <span>Finedu</span></a>
+      <div class="dash-user">
+        <?php if (!empty($user['photo'])): ?>
+          <img src="<?= htmlspecialchars($user['photo']) ?>" alt="Foto">
+        <?php endif; ?>
+        <span><?= htmlspecialchars($user['name'] ?? $user['email']) ?></span>
+        <a href="/auth/logout" class="btn-logout">Sair</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="dash-main">
+    <div class="container">
+      <h1>Bem-vindo, <?= htmlspecialchars(explode(' ', $user['name'] ?? '')[0]) ?>!</h1>
+      <p>Escolha um dos serviços abaixo para começar.</p>
+
+      <div class="dash-grid">
+        <div class="dash-card">
+          <h3>📚 Cursos Online</h3>
+          <p>Acesse o conteúdo estruturado em gestão financeira e certificações.</p>
+        </div>
+        <div class="dash-card">
+          <h3>💬 Consultoria</h3>
+          <p>Agende uma consultoria personalizada com nossos especialistas.</p>
+        </div>
+        <div class="dash-card">
+          <h3>🎓 Mentoria</h3>
+          <p>Mentoria preparatória para CPA, C-Pro R e C-Pro I.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

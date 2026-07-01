@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  fetch('auth/status')
+  fetch('/auth/status')
     .then(r => r.json())
     .then(data => {
       const navAuth = document.getElementById('nav-auth');

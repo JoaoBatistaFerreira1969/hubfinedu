@@ -1,0 +1,266 @@
+<?php require_once 'includes/session.php'; ?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HuB Finedu - Plataforma de Educação Financeira</title>
+  <meta name="description" content="Plataforma completa de aprendizagem em educação, gestão financeira e preparação para certificações CPA, C-Pro R e C-Pro I.">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="/" class="logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="15" fill="url(#logo-grad)"/>
+          <path d="M10 20V12l6-4 6 4v8l-6 4-6-4z" fill="white" opacity="0.9"/>
+          <path d="M16 12v8M12 16h8" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="logo-grad" x1="0" y1="0" x2="32" y2="32">
+              <stop stop-color="#3b82f6"/>
+              <stop offset="1" stop-color="#f59e0b"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        HuB <span>Finedu</span>
+      </a>
+      <button class="mobile-toggle" id="mobile-toggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#diferenciais">Diferenciais</a></li>
+        <li><a href="#contato">Contato</a></li>
+        <li id="nav-auth">
+          <?php if (isAuthenticated()): ?>
+            <a href="/dashboard" class="nav-btn" style="background:var(--accent-2);color:var(--primary)">Painel</a>
+          <?php else: ?>
+            <a href="/login" class="nav-btn">Entrar</a>
+          <?php endif; ?>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <div class="hero-badge">AVA - Ambiente Virtual de Aprendizagem</div>
+          <h1>Transforme seu conhecimento em <span class="highlight">resultados</span></h1>
+          <p class="hero-subtitle">
+            Plataforma completa de aprendizagem em educação, gestão financeira e preparação para certificações CPA, C-Pro R e C-Pro I. Consultoria e mentoria personalizadas.
+          </p>
+          <div class="hero-buttons">
+            <a href="/login" class="btn btn-primary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              Explorar Cursos
+            </a>
+            <a href="/login" class="btn btn-secondary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Agendar Sessão
+            </a>
+          </div>
+        </div>
+        <div class="hero-image">
+          <a href="/login" class="hero-image-link" aria-label="Agendar Sessão">
+            <svg viewBox="0 0 500 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="bg-grad" x1="0" y1="0" x2="500" y2="420">
+                  <stop stop-color="#3b82f6"/>
+                  <stop offset="1" stop-color="#f59e0b"/>
+                </linearGradient>
+                <linearGradient id="card-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop stop-color="#ffffff"/>
+                  <stop offset="1" stop-color="#f8fafc"/>
+                </linearGradient>
+                <filter id="shadow-card">
+                  <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.08"/>
+                </filter>
+                <filter id="shadow-cal">
+                  <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000" flood-opacity="0.12"/>
+                </filter>
+              </defs>
+
+              <rect x="30" y="50" width="440" height="320" rx="24" fill="url(#bg-grad)" opacity="0.25" filter="url(#shadow-card)"/>
+
+              <g filter="url(#shadow-cal)">
+                <rect x="50" y="70" width="180" height="160" rx="16" fill="white" opacity="0.98"/>
+                <rect x="50" y="70" width="180" height="44" rx="16" fill="#3b82f6"/>
+                <rect x="50" y="98" width="180" height="16" fill="#3b82f6"/>
+                <text x="140" y="100" text-anchor="middle" font-family="system-ui" font-size="11" fill="white" font-weight="700">JUNHO 2026</text>
+                <text x="65" y="130" font-family="system-ui" font-size="10" fill="#94a3b8" font-weight="600">DOM</text>
+                <text x="95" y="130" font-family="system-ui" font-size="10" fill="#94a3b8" font-weight="600">SEG</text>
+                <text x="125" y="130" font-family="system-ui" font-size="10" fill="#94a3b8" font-weight="600">TER</text>
+                <text x="155" y="130" font-family="system-ui" font-size="10" fill="#94a3b8" font-weight="600">QUA</text>
+                <text x="185" y="130" font-family="system-ui" font-size="10" fill="#94a3b8" font-weight="600">QUI</text>
+                <text x="215" y="130" font-family="system-ui" font-size="10" fill="#94a3b8" font-weight="600">SEX</text>
+                <text x="65" y="150" font-family="system-ui" font-size="11" fill="#64748b">1</text>
+                <text x="95" y="150" font-family="system-ui" font-size="11" fill="#64748b">2</text>
+                <circle cx="125" cy="146" r="8" fill="#f59e0b" opacity="0.2"/>
+                <text x="125" y="150" font-family="system-ui" font-size="11" fill="#d97706" font-weight="700" text-anchor="middle">3</text>
+                <text x="155" y="150" font-family="system-ui" font-size="11" fill="#64748b">4</text>
+                <text x="185" y="150" font-family="system-ui" font-size="11" fill="#64748b">5</text>
+                <rect x="209" y="142" width="14" height="14" rx="4" fill="#3b82f6"/>
+                <text x="216" y="153" font-family="system-ui" font-size="10" fill="white" font-weight="700" text-anchor="middle">6</text>
+                <text x="65" y="170" font-family="system-ui" font-size="11" fill="#64748b">7</text>
+                <text x="95" y="170" font-family="system-ui" font-size="11" fill="#64748b">8</text>
+                <circle cx="125" cy="166" r="8" fill="#3b82f6" opacity="0.15"/>
+                <text x="125" y="170" font-family="system-ui" font-size="11" fill="#3b82f6" font-weight="700" text-anchor="middle">9</text>
+                <text x="155" y="170" font-family="system-ui" font-size="11" fill="#64748b">10</text>
+                <text x="185" y="170" font-family="system-ui" font-size="11" fill="#64748b">11</text>
+                <text x="215" y="170" font-family="system-ui" font-size="11" fill="#64748b">12</text>
+              </g>
+
+              <g filter="url(#shadow-cal)">
+                <rect x="260" y="70" width="190" height="160" rx="16" fill="white" opacity="0.98"/>
+                <rect x="278" y="92" width="80" height="6" rx="3" fill="#0f172a" opacity="0.15"/>
+                <rect x="278" y="106" width="50" height="6" rx="3" fill="#3b82f6" opacity="0.4"/>
+                <rect x="278" y="130" width="16" height="50" rx="4" fill="#3b82f6" opacity="0.3"/>
+                <rect x="302" y="120" width="16" height="60" rx="4" fill="#3b82f6" opacity="0.5"/>
+                <rect x="326" y="140" width="16" height="40" rx="4" fill="#3b82f6" opacity="0.3"/>
+                <rect x="350" y="110" width="16" height="70" rx="4" fill="#f59e0b" opacity="0.7"/>
+                <rect x="374" y="125" width="16" height="55" rx="4" fill="#3b82f6" opacity="0.5"/>
+                <line x1="276" y1="195" x2="395" y2="195" stroke="#e2e8f0" stroke-width="1"/>
+                <circle cx="310" cy="120" r="3" fill="#3b82f6"/>
+                <path d="M306 120 L310 112 L314 120" fill="#3b82f6"/>
+                <text x="310" y="108" text-anchor="middle" font-family="system-ui" font-size="8" fill="#3b82f6" font-weight="600">+18%</text>
+              </g>
+
+              <g filter="url(#shadow-cal)">
+                <rect x="50" y="250" width="400" height="95" rx="16" fill="white" opacity="0.98"/>
+                <circle cx="80" cy="280" r="16" fill="url(#bg-grad)"/>
+                <text x="80" y="285" text-anchor="middle" font-family="system-ui" font-size="10" fill="white" font-weight="700">JF</text>
+                <text x="105" y="276" font-family="system-ui" font-size="13" fill="#0f172a" font-weight="700">Mentoria CPA</text>
+                <text x="105" y="294" font-family="system-ui" font-size="11" fill="#64748b">João B. Ferreira</text>
+                <rect x="290" y="266" width="70" height="22" rx="20" fill="#f59e0b" opacity="0.15"/>
+                <text x="325" y="281" text-anchor="middle" font-family="system-ui" font-size="10" fill="#d97706" font-weight="700">Agendar</text>
+                <rect x="370" y="266" width="60" height="22" rx="20" fill="#3b82f6"/>
+                <text x="400" y="281" text-anchor="middle" font-family="system-ui" font-size="10" fill="white" font-weight="700">▶</text>
+                <rect x="105" y="306" width="14" height="14" rx="3" fill="#3b82f6" opacity="0.15"/>
+                <text x="112" y="317" text-anchor="middle" font-family="system-ui" font-size="8" fill="#3b82f6" font-weight="700">25</text>
+                <text x="125" y="317" font-family="system-ui" font-size="10" fill="#64748b">Sessão: 14:00 - 15:30</text>
+              </g>
+
+              <g>
+                <rect x="420" y="55" width="40" height="20" rx="10" fill="#22c55e"/>
+                <circle cx="435" cy="65" r="3" fill="white"/>
+              </g>
+
+              <path d="M260 100 L290 100" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.5"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="servicos">
+    <div class="container">
+      <div class="section-header">
+        <h2>Nossos Serviços</h2>
+        <p>Oferecemos uma combinação única de cursos, consultoria e mentoria para impulsionar sua carreira no mercado financeiro.</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <h3>Cursos Online</h3>
+          <p>Conteúdo estruturado em educação, gestão financeira e preparação para certificações.</p>
+          <a href="#" class="btn-outline">Ver Cursos →</a>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h3>Consultoria</h3>
+          <p>Consultoria especializada em educação e gestão financeira para resultados concretos.</p>
+          <a href="#" class="btn-outline">Saiba Mais →</a>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>Mentoria</h3>
+          <p>Mentoria preparatória para certificações CPA, C-Pro R e C-Pro I com acompanhamento individual.</p>
+          <a href="#" class="btn-outline">Saiba Mais →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="diferenciais">
+    <div class="container">
+      <div class="section-header">
+        <h2>Por que escolher o HuB Finedu?</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🎓</div>
+          <h3>Conteúdo Especializado</h3>
+          <p>Material desenvolvido fundamentado no Programa Detalhado da ANBIMA, além de conteúdo acadêmico em Gestão Financeira.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>Atendimento Personalizado</h3>
+          <p>Consultoria e mentoria adaptadas às suas necessidades e objetivos.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📅</div>
+          <h3>Agenda Flexível</h3>
+          <p>Agende sessões de consultoria ou mentoria no horário que melhor funciona para você.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section" id="contato">
+    <div class="cta-content">
+      <h2>Pronto para começar sua jornada?</h2>
+      <p>Cadastre-se gratuitamente e tenha acesso aos nossos cursos, consultoria e mentoria.</p>
+      <div class="cta-buttons">
+        <a href="/login" class="btn btn-cta">Começar Agora</a>
+        <a href="/login" class="btn btn-cta-secondary">Agendar Consultoria</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>HuB Finedu</h3>
+          <p>Plataforma de aprendizagem, consultoria e mentoria em educação e mercado financeiro.</p>
+        </div>
+        <div>
+          <h4>Cursos</h4>
+          <ul>
+            <li><a href="#">Educação Financeira</a></li>
+            <li><a href="#">Gestão Financeira</a></li>
+            <li><a href="#">Certificações CPA</a></li>
+            <li><a href="#">C-Pro R e C-Pro I</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Serviços</h4>
+          <ul>
+            <li><a href="#">Consultoria Individual</a></li>
+            <li><a href="#">Consultoria Familiar</a></li>
+            <li><a href="#">Mentoria Personalizada</a></li>
+            <li><a href="#">Mentoria em Grupo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2026 HuB Finedu. Todos os direitos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
