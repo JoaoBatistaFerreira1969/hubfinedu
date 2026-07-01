@@ -93,7 +93,7 @@
       <div class="dash-user" id="user-info">
         <img id="user-photo" src="" alt="Foto">
         <span id="user-name">Carregando...</span>
-        <a href="auth/logout" class="btn-logout">Sair</a>
+        <a href="/auth/logout" class="btn-logout">Sair</a>
       </div>
     </div>
   </header>
@@ -121,7 +121,7 @@
   </main>
 
   <script>
-    fetch('auth/status')
+    fetch('/auth/status')
       .then(r => r.json())
       .then(data => {
         if (data.authenticated) {
