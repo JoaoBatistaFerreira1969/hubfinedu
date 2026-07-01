@@ -6,6 +6,7 @@ const passport = require('./src/auth/oauth2');
 const authRoutes = require('./src/routes/auth');
 const registerRoutes = require('./src/routes/register');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -43,7 +44,9 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-  res.sendFile(path.join(__dirname, 'register.html'));
+  let html = fs.readFileSync(path.join(__dirname, 'register.html'), 'utf-8');
+  html = html.replace('{RECAPTCHA_SITE_KEY}', process.env.RECAPTCHA_SITE_KEY || '');
+  res.send(html);
 });
 
 app.listen(PORT, () => {

@@ -6,9 +6,42 @@ const { sendConfirmationEmail } = require('../services/email');
 
 const router = Router();
 
+async function verifyRecaptcha(token) {
+  const secret = process.env.RECAPTCHA_SECRET_KEY;
+  if (!secret || secret === 'sua_chave_secreta_do_recaptcha') {
+    return true;
+  }
+  try {
+    const https = require('https');
+    const qs = new URLSearchParams({ secret, response: token });
+    return new Promise((resolve, reject) => {
+      const req = https.request(
+        `https://www.google.com/recaptcha/api/siteverify`,
+        { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
+        (res) => {
+          let data = '';
+          res.on('data', c => data += c);
+          res.on('end', () => {
+            try { const j = JSON.parse(data); resolve(j.success); }
+            catch { resolve(false); }
+          });
+        }
+      );
+      req.on('error', () => resolve(false));
+      req.write(qs.toString());
+      req.end();
+    });
+  } catch { return false; }
+}
+
 router.post('/register', async (req, res) => {
   try {
-    const { username, password, email, confirmEmail, name, surname, city, phone, cpf } = req.body;
+    const { username, password, email, confirmEmail, name, surname, city, phone, cpf, recaptchaToken } = req.body;
+
+    const recaptchaValid = await verifyRecaptcha(recaptchaToken);
+    if (!recaptchaValid) {
+      return res.status(400).json({ error: 'Falha na verificação do reCAPTCHA. Tente novamente.' });
+    }
 
     const errors = [];
 
