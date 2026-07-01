@@ -95,7 +95,9 @@ function sendEmail(array $to, string $subject, string $html): bool {
             $mail->SMTPAuth = true;
             $mail->Username = SMTP_USER;
             $mail->Password = SMTP_PASS;
-            if (SMTP_SECURE) {
+            if (SMTP_SECURE === 'ssl') {
+                $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+            } elseif (SMTP_SECURE === 'tls') {
                 $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
             }
             $mail->setFrom(SMTP_FROM, APP_NAME);
