@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Criar Conta - HuB Finedu</title>
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="{BASE_PATH}/assets/favicon.svg">
+  <link rel="stylesheet" href="{BASE_PATH}/css/style.css">
+  <script>window.BASE_PATH = '{BASE_PATH}';</script>
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
     .register-page {
@@ -263,7 +264,7 @@
 <body>
   <div class="register-page">
     <div class="register-card">
-      <a href="/" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;margin-bottom:24px">
+      <a href="{BASE_PATH}/" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;margin-bottom:24px">
         <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
           <circle cx="16" cy="16" r="15" fill="url(#logo-grad)"/>
           <path d="M10 20V12l6-4 6 4v8l-6 4-6-4z" fill="white" opacity="0.9"/>
@@ -355,7 +356,7 @@
 
           <div class="register-actions">
             <button type="submit" class="btn btn-primary" id="submit-btn">Criar minha conta</button>
-            <a href="/" class="btn btn-secondary">Cancelar</a>
+            <a href="{BASE_PATH}/" class="btn btn-secondary">Cancelar</a>
           </div>
 
           <div class="required-note">
@@ -425,7 +426,7 @@
       submitBtn.textContent = 'Criando...';
 
       try {
-        const res = await fetch('/auth/register', {
+        const res = await fetch(window.BASE_PATH + '/auth/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

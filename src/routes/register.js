@@ -6,9 +6,15 @@ const { sendConfirmationEmail } = require('../services/email');
 
 const router = Router();
 
+const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+const basePath = (() => {
+  try { return new URL(baseUrl).pathname.replace(/\/+$/, ''); }
+  catch { return ''; }
+})();
+
 async function verifyRecaptcha(token) {
   const secret = process.env.RECAPTCHA_SECRET_KEY;
-  if (!secret || secret === 'sua_chave_secreta_do_recaptcha') {
+  if (!secret || secret === 'sua_chave_secreta_do_recaptcha' || secret === '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe') {
     return true;
   }
   try {
@@ -111,7 +117,7 @@ router.get('/confirm', async (req, res) => {
   }
 
   if (user.confirmed) {
-    return res.send('<h2>Conta já confirmada. Faça login.</h2><a href="/login">Ir para Login</a>');
+    return res.send(`<h2>Conta já confirmada. Faça login.</h2><a href="${basePath}/login">Ir para Login</a>`);
   }
 
   updateUser(user.id, { confirmed: true, confirmationToken: null });
@@ -119,7 +125,7 @@ router.get('/confirm', async (req, res) => {
     <h2>Conta confirmada com sucesso!</h2>
     <p>Sua senha de teste foi enviada no email de confirmação.</p>
     <p>Você tem 7 dias de teste no AVA.</p>
-    <a href="/login">Ir para Login</a>
+    <a href="${basePath}/login">Ir para Login</a>
   `);
 });
 

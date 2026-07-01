@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - HuB Finedu</title>
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="{BASE_PATH}/assets/favicon.svg">
+  <link rel="stylesheet" href="{BASE_PATH}/css/style.css">
+  <script>window.BASE_PATH = '{BASE_PATH}';</script>
   <style>
     .dashboard-page {
       min-height: 100vh;
@@ -89,11 +90,11 @@
 <body>
   <header class="dash-header">
     <div class="container">
-      <a href="/" class="logo">HuB <span>Finedu</span></a>
+      <a href="{BASE_PATH}/" class="logo">HuB <span>Finedu</span></a>
       <div class="dash-user" id="user-info">
         <img id="user-photo" src="" alt="Foto">
         <span id="user-name">Carregando...</span>
-        <a href="/auth/logout" class="btn-logout">Sair</a>
+        <a href="{BASE_PATH}/auth/logout" class="btn-logout">Sair</a>
       </div>
     </div>
   </header>
@@ -121,7 +122,7 @@
   </main>
 
   <script>
-    fetch('/auth/status')
+    fetch(window.BASE_PATH + '/auth/status')
       .then(r => r.json())
       .then(data => {
         if (data.authenticated) {
