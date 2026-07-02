@@ -19,9 +19,11 @@ RewriteRule ^auth/confirm$ auth/confirm.php [L]
 RewriteRule ^auth/google$ auth/google.php [L]
 RewriteRule ^auth/google/callback$ auth/google_callback.php [L]
 
-# Remove .php da URL (opcional)
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.*)$ $1.php [L]
+# Paginas legais
+RewriteRule ^terms$ terms.php [L]
+RewriteRule ^privacy$ privacy.php [L]
+
+# CSS, JS, assets — servir diretamente
 
 # CSS, JS, assets — servir diretamente
 RewriteCond %{REQUEST_FILENAME} -f

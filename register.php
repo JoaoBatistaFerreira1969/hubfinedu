@@ -358,7 +358,7 @@ if (isAuthenticated()) {
           <h2><span class="badge">4</span> Acordo de Política do Site</h2>
           <div class="agreement">
             <input type="checkbox" id="agree" name="agree" required>
-            <label for="agree">Eu compreendo e concordo com os <a href="#" target="_blank">Termos de Uso</a> e <a href="#" target="_blank">Política de Privacidade</a> do site.</label>
+            <label for="agree">Eu compreendo e concordo com os <a href="/terms" target="_blank">Termos de Uso</a> e <a href="/privacy" target="_blank">Política de Privacidade</a> do site.</label>
           </div>
 
           <div class="register-actions">
