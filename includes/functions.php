@@ -1,6 +1,11 @@
 <?php
 require_once __DIR__ . '/config.php';
 
+$autoload = __DIR__ . '/../vendor/autoload.php';
+if (file_exists($autoload)) {
+    require_once $autoload;
+}
+
 function getDataDir(): string {
     $dir = __DIR__ . '/../data';
     if (!is_dir($dir)) {

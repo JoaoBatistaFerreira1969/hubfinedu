@@ -15,3 +15,5 @@ define('SMTP_FROM', 'noreply@hubfinedu.com.br');
 
 define('RECAPTCHA_SITE_KEY', '6LfYmT4tAAAAAHQClzI_I0WtBIkRtUx_1M4gEe5X');
 define('RECAPTCHA_SECRET_KEY', '6LfYmT4tAAAAAN0OWQzZ-beIQemRVik9o2DnOFbE');
+
+define('ADMIN_PASSWORD', 'hubfinedu2026');

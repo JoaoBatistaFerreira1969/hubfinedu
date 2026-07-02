@@ -22,6 +22,7 @@ RewriteRule ^auth/google/callback$ auth/google_callback.php [L]
 # Paginas legais
 RewriteRule ^terms$ terms.php [L]
 RewriteRule ^privacy$ privacy.php [L]
+RewriteRule ^admin$ admin.php [L]
 
 # CSS, JS, assets — servir diretamente
 
