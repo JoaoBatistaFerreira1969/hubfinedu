@@ -150,6 +150,14 @@ if (isAuthenticated()) {
     .login-back:hover {
       color: var(--accent-1);
     }
+    .local-login { margin-top: 20px; text-align: left; }
+    .local-login .form-group { margin-bottom: 12px; }
+    .local-login label { display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 4px; }
+    .local-login input { width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; outline: none; font-family: inherit; box-sizing: border-box; }
+    .local-login input:focus { border-color: var(--accent-1); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+    .btn-login-local { width: 100%; padding: 12px; border-radius: 50px; font-size: 1rem; font-weight: 600; background: var(--primary); color: #fff; border: none; cursor: pointer; font-family: inherit; transition: var(--transition); margin-top: 4px; }
+    .btn-login-local:hover { background: var(--accent-1-dark, #2563eb); }
+    .login-error { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; margin: 12px 0; display: none; }
   </style>
 </head>
 <body>
@@ -178,7 +186,55 @@ if (isAuthenticated()) {
         Entrar com Google
       </a>
 
+      <div class="local-login">
+        <div class="login-error" id="login-error"></div>
+        <form id="login-form">
+          <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" id="login-email" name="email" required placeholder="seu@email.com">
+          </div>
+          <div class="form-group">
+            <label>Senha</label>
+            <input type="password" id="login-password" name="password" required placeholder="Sua senha">
+          </div>
+          <button type="submit" class="btn-login-local" id="login-btn">Entrar</button>
+        </form>
+      </div>
+
       <div class="login-divider">ou</div>
+
+      <script>
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+          e.preventDefault();
+          const errorDiv = document.getElementById('login-error');
+          const btn = document.getElementById('login-btn');
+          errorDiv.style.display = 'none';
+          btn.disabled = true;
+          btn.textContent = 'Entrando...';
+          try {
+            const res = await fetch('/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: document.getElementById('login-email').value,
+                password: document.getElementById('login-password').value
+              })
+            });
+            const data = await res.json();
+            if (res.ok) {
+              window.location.href = '/dashboard';
+            } else {
+              errorDiv.textContent = data.error || 'Erro ao fazer login.';
+              errorDiv.style.display = 'block';
+            }
+          } catch (err) {
+            errorDiv.textContent = 'Erro de conexão. Tente novamente.';
+            errorDiv.style.display = 'block';
+          }
+          btn.disabled = false;
+          btn.textContent = 'Entrar';
+        });
+      </script>
 
       <div class="register-section">
         <h3>Esta é a sua primeira vez aqui?</h3>
