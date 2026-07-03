@@ -24,6 +24,13 @@ RewriteRule ^auth/google/callback$ auth/google_callback.php [L]
 RewriteRule ^terms$ terms.php [L]
 RewriteRule ^privacy$ privacy.php [L]
 RewriteRule ^admin$ admin.php [L]
+RewriteRule ^admin/import$ admin/import.php [L]
+
+# Quiz
+RewriteRule ^quiz$ quiz/index.php [L]
+RewriteRule ^quiz/take$ quiz/take.php [L]
+RewriteRule ^quiz/answer$ quiz/answer.php [L]
+RewriteRule ^quiz/result$ quiz/result.php [L]
 
 # CSS, JS, assets — servir diretamente
 

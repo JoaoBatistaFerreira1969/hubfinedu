@@ -6,6 +6,20 @@ if (file_exists($autoload)) {
     require_once $autoload;
 }
 
+$dbAvailable = defined('DB_NAME') && DB_NAME !== '';
+if ($dbAvailable) {
+    try {
+        require_once __DIR__ . '/database.php';
+    } catch (\Exception $e) {
+        $dbAvailable = false;
+    }
+}
+
+function isDB(): bool {
+    global $dbAvailable;
+    return $dbAvailable && function_exists('getDB');
+}
+
 function getDataDir(): string {
     $dir = __DIR__ . '/../data';
     if (!is_dir($dir)) {
@@ -33,6 +47,9 @@ function writeUsers(array $users): void {
 }
 
 function findByEmail(string $email): ?array {
+    if (isDB()) {
+        return dbFindByEmail($email);
+    }
     $users = readUsers();
     foreach ($users as $u) {
         if (($u['email'] ?? '') === strtolower($email)) {
@@ -43,6 +60,9 @@ function findByEmail(string $email): ?array {
 }
 
 function findByToken(string $token): ?array {
+    if (isDB()) {
+        return dbFindByToken($token);
+    }
     $users = readUsers();
     foreach ($users as $u) {
         if (($u['confirmationToken'] ?? '') === $token) {
@@ -53,6 +73,9 @@ function findByToken(string $token): ?array {
 }
 
 function createUser(array $data): array {
+    if (isDB()) {
+        return dbCreateUser($data);
+    }
     $users = readUsers();
     $users[] = $data;
     writeUsers($users);
@@ -60,6 +83,9 @@ function createUser(array $data): array {
 }
 
 function updateUser(string $id, array $updates): ?array {
+    if (isDB()) {
+        return dbUpdateUser($id, $updates);
+    }
     $users = readUsers();
     foreach ($users as &$u) {
         if (($u['id'] ?? '') === $id) {
@@ -69,6 +95,13 @@ function updateUser(string $id, array $updates): ?array {
         }
     }
     return null;
+}
+
+function getAllUsers(): array {
+    if (isDB()) {
+        return dbGetAllUsers();
+    }
+    return readUsers();
 }
 
 function verifyRecaptcha(string $token): bool {
@@ -130,7 +163,7 @@ function sendLoginConfirmation(array $user): void {
         <div style="background:#fff;padding:32px;border:1px solid #e2e8f0;border-top:0;border-radius:0 0 12px 12px">
             <h2 style="color:#0f172a;margin-top:0">Login confirmado</h2>
             <p style="color:#475569;font-size:15px;line-height:1.6">
-                Olá <strong>' . ($user['name'] ?? '') . '</strong>,<br><br>
+                Ol&aacute; <strong>' . ($user['name'] ?? '') . '</strong>,<br><br>
                 Seu login na plataforma ' . APP_NAME . ' foi realizado com sucesso usando sua conta Google.<br><br>
                 <strong>Detalhes do acesso:</strong><br>
                 &bull; Email: ' . ($user['email'] ?? '') . '<br>
@@ -139,7 +172,7 @@ function sendLoginConfirmation(array $user): void {
             </p>
             <hr style="border:0;border-top:1px solid #e2e8f0;margin:24px 0">
             <p style="color:#94a3b8;font-size:13px;text-align:center">
-                ' . APP_NAME . ' — Plataforma de Educação Financeira
+                ' . APP_NAME . ' &mdash; Plataforma de Educa&ccedil;&atilde;o Financeira
             </p>
         </div>
     </div>';
@@ -166,22 +199,22 @@ function sendConfirmationEmail(array $user, string $token): void {
                 Para confirmar sua nova conta, acesse o seguinte endere&ccedil;o:<br><br>
                 <a href="' . $confirmLink . '" style="color:#3b82f6;font-size:14px">' . $confirmLink . '</a><br><br>
                 Na maioria dos programas de E-mail isso deve aparecer como um link azul que voc&ecirc; pode simplesmente clicar. Se isto n&atilde;o funcionar, copie e cole este link na barra de endere&ccedil;os do seu navegador.<br><br>
-                <strong>Senha para acessar o per&iacute;odo de "TESTE" no AVA por 7 dias:</strong><br>
+                <strong>Senha para acessar o per&iacute;odo de &quot;TESTE&quot; no AVA por 7 dias:</strong><br>
                 <div style="background:#f8fafc;padding:12px 16px;border-radius:8px;font-family:monospace;font-size:16px;text-align:center;margin:8px 0">' . $tempPassword . '</div><br>
-                Lembre-se que seus dados ser&atilde;o exclu&iacute;dos em 30 dias, contados do t&eacute;rmino do TESTE no AVA, caso n&atilde;o fa&ccedil;a "aquisi&ccedil;&atilde;o" do acesso ao AVA real de ESTUDO.<br><br>
+                Lembre-se que seus dados ser&atilde;o exclu&iacute;dos em 30 dias, contados do t&eacute;rmino do TESTE no AVA, caso n&atilde;o fa&ccedil;a &quot;aquisi&ccedil;&atilde;o&quot; do acesso ao AVA real de ESTUDO.<br><br>
                 Se precisar de ajuda, contate o administrador do site.<br><br>
                 Atenciosamente,<br>
                 <strong>Suporte ' . APP_NAME . '</strong>
             </p>
             <hr style="border:0;border-top:1px solid #e2e8f0;margin:24px 0">
             <p style="color:#94a3b8;font-size:13px;text-align:center">
-                ' . APP_NAME . ' — Plataforma de Educa&ccedil;&atilde;o Financeira
+                ' . APP_NAME . ' &mdash; Plataforma de Educa&ccedil;&atilde;o Financeira
             </p>
         </div>
     </div>';
     sendEmail(
         ['email' => $user['email'], 'name' => $user['name'] ?? ''],
-        'Confirma\u00e7\u00e3o de conta - ' . APP_NAME,
+        'Confirma&ccedil;&atilde;o de conta - ' . APP_NAME,
         $html
     );
 }

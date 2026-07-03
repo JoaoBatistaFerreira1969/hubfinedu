@@ -78,7 +78,7 @@ if (!empty($_SESSION['admin_logged'])) {
       </div>
 
       <?php
-      $users = readUsers();
+      $users = getAllUsers();
       $confirmed = count(array_filter($users, fn($u) => $u['confirmed'] ?? false));
       ?>
       <p class="admin-count">Total: <strong><?= count($users) ?></strong> | Confirmados: <strong><?= $confirmed ?></strong> | Pendentes: <strong><?= count($users) - $confirmed ?></strong></p>
