@@ -55,7 +55,7 @@ if ($existing) {
     exit;
 }
 
-$hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+$hashedPassword = password_hash('123456789+', PASSWORD_BCRYPT);
 $confirmationToken = bin2hex(random_bytes(16));
 $now = new DateTime();
 

@@ -21,11 +21,16 @@ if ($user['confirmed']) {
     exit;
 }
 
-updateUser($user['id'], ['confirmed' => true, 'confirmationToken' => null]);
+updateUser($user['id'], [
+    'confirmed' => true,
+    'confirmationToken' => null,
+    'trialEndsAt' => (new DateTime())->modify('+7 days')->format('c'),
+]);
 
 echo '
 <h2>Conta confirmada com sucesso!</h2>
 <p>Sua senha de teste foi enviada no email de confirmação.</p>
 <p>Você tem 7 dias de teste no AVA.</p>
+<p><strong>Senha de acesso: 123456789+</strong></p>
 <a href="/login">Ir para Login</a>
 ';

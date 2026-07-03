@@ -40,6 +40,13 @@ if (!password_verify($password, $user['password'] ?? '')) {
     exit;
 }
 
+$trialEnd = $user['trialEndsAt'] ?? null;
+if ($trialEnd && new DateTime() > new DateTime($trialEnd)) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Período de teste de 7 dias expirado. Adquira o acesso.']);
+    exit;
+}
+
 loginUser([
     'id' => $user['id'],
     'name' => $user['name'] ?? '',

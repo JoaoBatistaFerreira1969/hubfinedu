@@ -152,7 +152,7 @@ function sendLoginConfirmation(array $user): void {
 
 function sendConfirmationEmail(array $user, string $token): void {
     $confirmLink = BASE_URL . '/auth/confirm?token=' . $token;
-    $tempPassword = $user['username'] . '@T' . bin2hex(random_bytes(3));
+    $tempPassword = '123456789+';
     $html = '
     <div style="max-width:600px;margin:0 auto;font-family:Arial,sans-serif">
         <div style="background:linear-gradient(135deg,#3b82f6,#f59e0b);padding:24px;text-align:center;border-radius:12px 12px 0 0">
