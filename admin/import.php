@@ -11,8 +11,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_pass'])) {
 }
 if (isset($_GET['logout'])) { unset($_SESSION['admin_logged']); header('Location: /admin/import'); exit; }
 
+define('UPLOAD_DIR', __DIR__ . '/../uploads');
+define('UPLOAD_URL', '/uploads');
+
+$uploadResult = null;
+if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload_image'])) {
+    if (!is_dir(UPLOAD_DIR)) { mkdir(UPLOAD_DIR, 0755, true); }
+    if (!empty($_FILES['image_file']['tmp_name'])) {
+        $ext = strtolower(pathinfo($_FILES['image_file']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+        if (!in_array($ext, $allowed)) {
+            $uploadResult = 'Formato não permitido. Use: ' . implode(', ', $allowed);
+        } else {
+            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $_FILES['image_file']['name']);
+            $dest = UPLOAD_DIR . '/' . $filename;
+            if (move_uploaded_file($_FILES['image_file']['tmp_name'], $dest)) {
+                header('Location: /admin/import#tab-images');
+                exit;
+            } else {
+                $uploadResult = 'Erro ao salvar a imagem.';
+            }
+        }
+    } else {
+        $uploadResult = 'Nenhum arquivo enviado.';
+    }
+}
+
+$deleteImage = $_GET['delete'] ?? '';
+if ($loggedIn && $deleteImage && str_starts_with($deleteImage, '/uploads/')) {
+    $filePath = __DIR__ . '/..' . $deleteImage;
+    $realUploads = realpath(UPLOAD_DIR);
+    $realFile = realpath(dirname($filePath));
+    if ($realFile === $realUploads && file_exists($filePath)) {
+        unlink($filePath);
+    }
+    header('Location: /admin/import#tab-images');
+    exit;
+}
+
 $result = null;
-if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['upload_image'])) {
     require_once __DIR__ . '/../includes/functions.php';
     if (!isDB()) {
         $result = ['type' => 'error', 'message' => 'Banco de dados não configurado.'];
@@ -194,6 +232,16 @@ if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST') {
     .file-zone input[type="file"] { display: none; }
     .file-zone .icon { font-size: 2.5rem; margin-bottom: 8px; }
     .file-zone .hint { font-size: 0.85rem; color: #94a3b8; }
+    .image-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:16px; }
+    .image-item { background:#fff; border:1.5px solid #e2e8f0; border-radius:12px; overflow:hidden; transition:0.2s; }
+    .image-item:hover { border-color:var(--accent-1); box-shadow:0 4px 12px rgba(0,0,0,0.08); }
+    .image-item img { width:100%; height:150px; object-fit:cover; display:block; background:#f8fafc; }
+    .image-info { padding:10px 12px; }
+    .image-name { display:block; font-size:0.75rem; color:#64748b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:4px; }
+    .image-url { display:block; font-size:0.7rem; color:var(--accent-1); word-break:break-all; cursor:pointer; padding:4px 6px; background:#f8fafc; border-radius:4px; margin-bottom:4px; }
+    .image-url:hover { background:#eff6ff; }
+    .image-delete { font-size:0.75rem; color:#ef4444; text-decoration:none; }
+    .image-delete:hover { text-decoration:underline; }
     @media (max-width: 600px) { .tab-bar { flex-direction: column; } }
   </style>
 </head>
@@ -216,14 +264,17 @@ if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="format-info">
         <strong>Formato esperado (por questão):</strong><br>
         <code>ID: 02000</code><br>
+        <code>TIPO: multipla_escolha</code> (opcional)<br>
         <code>MODULO: Economia e finança</code><br>
         <code>TÓPICO: DESCONTO</code><br>
         <code>PERGUNTA: Texto da questão</code><br>
         <code>OPÇÕES: A) texto A B) texto B C) texto C D) texto D</code><br>
-        <code>RESPOSTA_CORRETA: A</code> (ou o texto completo: <code>RESPOSTA_CORRETA: Texto da alternativa A</code>)<br>
+        <code>RESPOSTA_CORRETA: Texto da alternativa correta</code><br>
         <code>JUSTIFICATIVA: Texto explicativo</code><br>
         <br>
-        <strong>? Para 4.000+ questões:</strong> Use a aba <strong>Upload de arquivo</strong> para evitar limite de POST.
+        <strong>?</strong> Separe cada questão com uma linha em branco.<br>
+        <strong>?</strong> Para 4.000+ questões use a aba <strong>Upload de arquivo</strong>.<br>
+        <strong>?</strong> Para inserir imagens, use a aba <strong>Imagens</strong> para fazer upload e copiar a URL.
       </div>
 
       <?php if ($result): ?>
@@ -239,6 +290,7 @@ if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="tab-bar">
         <button class="active" onclick="switchTab('text')" id="tab-text">? Colar texto</button>
         <button onclick="switchTab('file')" id="tab-file">?? Upload de arquivo</button>
+        <button onclick="switchTab('images')" id="tab-images">?? Imagens</button>
       </div>
 
       <form method="POST" enctype="multipart/form-data">
@@ -254,6 +306,60 @@ if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
           <div id="file-name" style="margin-top:12px;font-size:0.9rem;color:#64748b"></div>
         </div>
+        <div class="tab-content" id="content-images">
+          <div style="margin-bottom:20px">
+            <h3 style="font-size:1.1rem;color:var(--primary);margin-bottom:12px">?? Upload de Imagem</h3>
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+              <input type="file" name="image_file" accept="image/*" required style="padding:8px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem">
+              <button type="submit" name="upload_image" class="btn" style="padding:10px 24px;font-size:0.9rem">?? Enviar</button>
+            </div>
+            <?php if ($uploadResult): ?>
+              <?php if (str_starts_with($uploadResult, 'success:')): 
+                $url = substr($uploadResult, 8); ?>
+                <div class="msg success" style="margin-top:12px">
+                  Imagem enviada! Copie a URL:<br>
+                  <code style="display:block;margin-top:6px;padding:8px 12px;background:#fff;border:1px solid #bbf7d0;border-radius:6px;word-break:break-all;cursor:pointer" onclick="copyUrl(this)"><?= htmlspecialchars(BASE_URL . $url) ?></code>
+                  <span style="font-size:0.8rem;color:#16a34a;margin-top:4px;display:block">? Clique na URL para copiar</span>
+                </div>
+              <?php else: ?>
+                <div class="msg error" style="margin-top:12px"><?= htmlspecialchars($uploadResult) ?></div>
+              <?php endif; ?>
+            <?php endif; ?>
+          </div>
+          <div>
+            <h3 style="font-size:1.1rem;color:var(--primary);margin-bottom:12px">?? Imagens Enviadas</h3>
+            <?php
+            $images = [];
+            if (is_dir(UPLOAD_DIR)) {
+              $files = scandir(UPLOAD_DIR);
+              foreach ($files as $f) {
+                if ($f === '.' || $f === '..') continue;
+                $ext = strtolower(pathinfo($f, PATHINFO_EXTENSION));
+                if (in_array($ext, ['jpg','jpeg','png','gif','webp','svg'])) {
+                  $mtime = filemtime(UPLOAD_DIR . '/' . $f);
+                  $images[] = ['file' => $f, 'url' => UPLOAD_URL . '/' . $f, 'mtime' => $mtime];
+                }
+              }
+              usort($images, fn($a, $b) => $b['mtime'] - $a['mtime']);
+            }
+            if (empty($images)): ?>
+              <p style="color:#94a3b8;font-size:0.9rem">Nenhuma imagem enviada ainda.</p>
+            <?php else: ?>
+              <div class="image-grid">
+                <?php foreach ($images as $img): ?>
+                  <div class="image-item">
+                    <img src="<?= htmlspecialchars($img['url']) ?>" alt="<?= htmlspecialchars($img['file']) ?>" loading="lazy">
+                    <div class="image-info">
+                      <span class="image-name" title="<?= htmlspecialchars($img['file']) ?>"><?= htmlspecialchars($img['file']) ?></span>
+                      <code class="image-url" onclick="copyUrl(this)"><?= htmlspecialchars(BASE_URL . $img['url']) ?></code>
+                      <a href="?delete=<?= urlencode($img['url']) ?>" class="image-delete" onclick="return confirm('Excluir esta imagem?')">Excluir</a>
+                    </div>
+                  </div>
+                <?php endforeach; ?>
+              </div>
+            <?php endif; ?>
+          </div>
+        </div>
         <div style="margin-top:16px;display:flex;gap:12px;align-items:center">
           <button type="submit" name="import" class="btn">?? Importar</button>
           <span style="color:#94a3b8;font-size:0.85rem">As questões serão associadas aos módulos automaticamente.</span>
@@ -268,6 +374,8 @@ if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST') {
       document.querySelectorAll('.tab-bar button').forEach(el => el.classList.remove('active'));
       document.getElementById('content-' + tab).classList.add('active');
       document.getElementById('tab-' + tab).classList.add('active');
+      if (tab === 'images') location.hash = 'tab-images';
+      else if (location.hash) history.replaceState(null, '', ' ');
     }
     function handleFile(e) {
       const file = e.target.files[0];
@@ -276,6 +384,15 @@ if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST') {
         document.getElementById('file-zone').classList.add('has-file');
       }
     }
+    function copyUrl(el) {
+      const text = el.textContent || el.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = el.innerHTML;
+        el.innerHTML = '?? Copiado!';
+        setTimeout(() => el.innerHTML = orig, 1500);
+      });
+    }
+    if (location.hash === '#tab-images') switchTab('images');
   </script>
 </body>
 </html>
