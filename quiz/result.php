@@ -12,7 +12,7 @@ if (!$attempt || $attempt['user_id'] !== getUser()['id']) {
 }
 
 $module = dbGetModule((int)$attempt['module_id']);
-$answers = getDB()->prepare('SELECT qa.*, q.question_text, q.correct_answer, q.justification, q.option_a, q.option_b, q.option_c, q.option_d FROM quiz_answers qa JOIN questions q ON qa.question_id = q.id WHERE qa.attempt_id = ?');
+$answers = getDB()->prepare('SELECT qa.*, q.question_text, q.correct_answer, q.justification, q.option_a, q.option_b, q.option_c, q.option_d, q.custom_id FROM quiz_answers qa JOIN questions q ON qa.question_id = q.id WHERE qa.attempt_id = ?');
 $answers->execute([$attemptId]);
 $allAnswers = $answers->fetchAll();
 
@@ -81,7 +81,7 @@ $userProgress = dbGetUserProgress(getUser()['id'], (int)$attempt['module_id']);
         $options = ['A' => $a['option_a'], 'B' => $a['option_b'], 'C' => $a['option_c'], 'D' => $a['option_d']];
       ?>
         <div class="review-item">
-          <div class="q"><?= ($i + 1) ?>. <?= htmlspecialchars($a['question_text']) ?></div>
+          <div class="q"><?= htmlspecialchars($a['custom_id'] ?? ($i + 1)) ?>. <?= htmlspecialchars($a['question_text']) ?></div>
           <div class="your-answer <?= $isCorrect ? 'correct' : 'wrong' ?>">
             Sua resposta: <?= $userLetter ? htmlspecialchars($userLetter . ') ' . ($options[$userLetter] ?? '')) : 'Não respondida' ?>
           </div>

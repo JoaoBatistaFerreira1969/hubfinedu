@@ -55,4 +55,12 @@ loginUser([
     'provider' => 'local',
 ]);
 
+// Garantir que usuário tenha acesso às certificações
+if (isDB()) {
+    $userCats = dbGetUserCategories($user['id']);
+    if (empty($userCats)) {
+        dbGrantAllCategories($user['id']);
+    }
+}
+
 echo json_encode(['success' => true, 'redirect' => '/dashboard']);

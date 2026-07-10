@@ -59,6 +59,13 @@ if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['upload_
         $mods = dbGetModules();
         foreach ($mods as $m) { $moduleMap[preg_replace('/\s+/', '', $m['code'])] = $m['id']; }
 
+        $categoryMap = [];
+        $cats = dbGetCategories();
+        foreach ($cats as $c) { $categoryMap[strtoupper(preg_replace('/\s+/', '', $c['code']))] = $c['id']; }
+
+        $selectedCategoryId = null;
+        $modulePrefix = '';
+
         $text = '';
         if (!empty($_FILES['file']['tmp_name'])) {
             $raw = file_get_contents($_FILES['file']['tmp_name']);
@@ -83,7 +90,13 @@ if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['upload_
                 $line = trim($line);
                 if (preg_match('/^ID:\s*(.+)$/i', $line, $m)) {
                     if (!empty($current)) $parsed[] = $current;
-                    $current = ['id' => trim($m[1])];
+                    $current = ['id' => trim($m[1]), 'custom_id' => trim($m[1])];
+                } elseif (preg_match('/^(?:CERTIFICACAO|CERTIFICAÇÃO):?\s*(.+)$/i', $line, $m)) {
+                    $certName = trim($m[1]);
+                    $certCode = strtoupper(preg_replace('/\s+/', '', $certName));
+                    if (isset($categoryMap[$certCode])) {
+                        $selectedCategoryId = $categoryMap[$certCode];
+                    }
                 } elseif (preg_match('/^MOD(?:ULO|ULE|UL0):?\s*(.+)$/i', $line, $m)) { $current['module'] = trim($m[1]); }
                 elseif (preg_match('/^T(?:O|Ó)PICO:?\s*(.+)$/i', $line, $m)) { $current['topic'] = trim($m[1]); }
                 elseif (preg_match('/^P(?:ERGUNTA|ERUNTA|ERGLJNTA):?\s*(.+)$/i', $line, $m)) { $current['question'] = $current['question'] ?? '' . trim($m[1]); }
@@ -102,7 +115,7 @@ if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['upload_
             $errors = [];
             $db = getDB();
 
-            $stmt = $db->prepare('INSERT INTO questions (module_id, topic, question_text, option_a, option_b, option_c, option_d, correct_answer, justification) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+            $stmt = $db->prepare('INSERT INTO questions (module_id, custom_id, topic, question_text, option_a, option_b, option_c, option_d, correct_answer, justification) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
             $totalParsed = count($parsed);
             foreach ($parsed as $idx => $q) {
@@ -110,9 +123,20 @@ if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['upload_
 
                 $modCode = preg_replace('/\s+/', '', $q['module'] ?? '');
                 $modId = null;
-                foreach ($moduleMap as $code => $id) {
-                    if ($modCode === '' || stripos($modCode, $code) !== false || stripos($code, $modCode) !== false) {
-                        $modId = $id; break;
+                if ($selectedCategoryId) {
+                    $catMods = dbGetModulesByCategory($selectedCategoryId);
+                    foreach ($catMods as $cm) {
+                        $cmCode = preg_replace('/\s+/', '', $cm['code']);
+                        if ($modCode === '' || stripos($modCode, $cmCode) !== false || stripos($cmCode, $modCode) !== false) {
+                            $modId = $cm['id']; break;
+                        }
+                    }
+                }
+                if (!$modId) {
+                    foreach ($moduleMap as $code => $id) {
+                        if ($modCode === '' || stripos($modCode, $code) !== false || stripos($code, $modCode) !== false) {
+                            $modId = $id; break;
+                        }
                     }
                 }
                 if (!$modId) { $errors[] = "Q" . ($idx + 1) . " (ID: {$q['id']}): módulo não encontrado: {$q['module']}"; continue; }
@@ -163,6 +187,7 @@ if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['upload_
                 try {
                     $stmt->execute([
                         $modId,
+                        $q['custom_id'] ?? null,
                         mb_substr($q['topic'] ?? '', 0, 200),
                         $q['question'],
                         $optA,
@@ -264,7 +289,6 @@ if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['upload_
       <div class="format-info">
         <strong>Formato esperado (por questão):</strong><br>
         <code>ID: 02000</code><br>
-        <code>TIPO: multipla_escolha</code> (opcional)<br>
         <code>MODULO: Economia e finança</code><br>
         <code>TÓPICO: DESCONTO</code><br>
         <code>PERGUNTA: Texto da questão</code><br>
@@ -274,7 +298,8 @@ if ($loggedIn && $_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['upload_
         <br>
         <strong>?</strong> Separe cada questão com uma linha em branco.<br>
         <strong>?</strong> Para 4.000+ questões use a aba <strong>Upload de arquivo</strong>.<br>
-        <strong>?</strong> Para inserir imagens, use a aba <strong>Imagens</strong> para fazer upload e copiar a URL.
+        <strong>?</strong> Para inserir imagens, use a aba <strong>Imagens</strong> para fazer upload e copiar a URL.<br>
+        <strong>?</strong> Use <code>CERTIFICACAO: CPA</code> (ou C Pro-R, C Pro-I, EDUFIN, GESTFIN) no início do arquivo para direcionar as questões a uma certificação específica.
       </div>
 
       <?php if ($result): ?>

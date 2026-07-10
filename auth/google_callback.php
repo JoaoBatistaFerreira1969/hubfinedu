@@ -62,5 +62,18 @@ try {
     error_log('Erro ao enviar email de confirmação: ' . $e->getMessage());
 }
 
+// Liberar acesso a todas as certificações para novos usuários
+if (isDB()) {
+    $existing = dbFindByEmail($user['email']);
+    if (!$existing) {
+        $now = new DateTime();
+        $user['trialEndsAt'] = $now->modify('+7 days')->format('c');
+        $user['expiresAt'] = (new DateTime())->modify('+30 days')->format('c');
+        $user['confirmed'] = true;
+        dbCreateUser($user);
+        dbGrantAllCategories($user['id']);
+    }
+}
+
 header('Location: /dashboard');
 exit;

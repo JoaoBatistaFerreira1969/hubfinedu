@@ -25,22 +25,45 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_token (confirmation_token)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    code VARCHAR(20) NOT NULL UNIQUE,
+    description TEXT,
+    enabled TINYINT(1) DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS modules (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     code VARCHAR(20) NOT NULL,
     description TEXT,
+    category_id INT DEFAULT NULL,
     order_num INT NOT NULL DEFAULT 0,
     total_questions INT DEFAULT 0,
     passing_score DECIMAL(5,2) DEFAULT 50.00,
     max_attempts INT DEFAULT 10,
     time_per_question INT DEFAULT 180,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS user_categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(64) NOT NULL,
+    category_id INT NOT NULL,
+    granted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    expires_at DATETIME DEFAULT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE,
+    UNIQUE KEY uk_user_category (user_id, category_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS questions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     module_id INT NOT NULL,
+    custom_id VARCHAR(20) DEFAULT NULL,
     topic VARCHAR(200) DEFAULT '',
     question_text TEXT NOT NULL,
     option_a VARCHAR(500) NOT NULL,
@@ -53,7 +76,8 @@ CREATE TABLE IF NOT EXISTS questions (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (module_id) REFERENCES modules(id) ON DELETE CASCADE,
     INDEX idx_module (module_id),
-    INDEX idx_topic (topic)
+    INDEX idx_topic (topic),
+    INDEX idx_custom_id (custom_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS quiz_attempts (
@@ -101,7 +125,15 @@ CREATE TABLE IF NOT EXISTS user_progress (
     UNIQUE KEY uk_user_module (user_id, module_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Inserir módulos padrão
+-- Inserir categorias padrão
+INSERT INTO categories (name, code, description) VALUES
+('CPA', 'CPA', 'Certificação de Profissional de Agente Autônomo'),
+('C Pro-R', 'CPROR', 'Certificação de Profissional de Relacionamento'),
+('C Pro-I', 'CPROI', 'Certificação de Profissional de Investimentos'),
+('Educação Financeira', 'EDUFIN', 'Educação Financeira Geral'),
+('Gestão Financeira', 'GESTFIN', 'Gestão Financeira Empresarial');
+
+-- Inserir módulos padrão (sem categoria definida)
 INSERT INTO modules (name, code, description, order_num, total_questions, passing_score, max_attempts, time_per_question) VALUES
 ('Módulo 1', 'M1', 'Módulo introdutório', 1, 10, 50.00, 10, 180),
 ('Módulo 2', 'M2', 'Segundo módulo', 2, 20, 50.00, 10, 180),

@@ -27,6 +27,11 @@ updateUser($user['id'], [
     'trialEndsAt' => (new DateTime())->modify('+7 days')->format('c'),
 ]);
 
+// Liberar acesso a todas as certificações
+if (isDB()) {
+    dbGrantAllCategories($user['id']);
+}
+
 echo '
 <h2>Conta confirmada com sucesso!</h2>
 <p>Sua senha de teste foi enviada no email de confirmação.</p>

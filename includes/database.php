@@ -117,15 +117,72 @@ function dbGetAllUsers(): array {
     return array_map('dbMapUser', $users);
 }
 
+function dbGetCategories(): array {
+    $stmt = getDB()->query('SELECT * FROM categories WHERE enabled = 1 ORDER BY name');
+    return $stmt->fetchAll();
+}
+
+function dbGetCategory(int $id): ?array {
+    $stmt = getDB()->prepare('SELECT * FROM categories WHERE id = ?');
+    $stmt->execute([$id]);
+    return $stmt->fetch() ?: null;
+}
+
+function dbGetCategoryByCode(string $code): ?array {
+    $stmt = getDB()->prepare('SELECT * FROM categories WHERE code = ?');
+    $stmt->execute([$code]);
+    return $stmt->fetch() ?: null;
+}
+
 function dbGetModules(): array {
-    $stmt = getDB()->query('SELECT * FROM modules ORDER BY order_num');
+    $stmt = getDB()->query('SELECT m.*, c.name as category_name, c.code as category_code FROM modules m LEFT JOIN categories c ON m.category_id = c.id ORDER BY m.order_num');
     return $stmt->fetchAll();
 }
 
 function dbGetModule(int $id): ?array {
-    $stmt = getDB()->prepare('SELECT * FROM modules WHERE id = ?');
+    $stmt = getDB()->prepare('SELECT m.*, c.name as category_name, c.code as category_code FROM modules m LEFT JOIN categories c ON m.category_id = c.id WHERE m.id = ?');
     $stmt->execute([$id]);
     return $stmt->fetch() ?: null;
+}
+
+function dbGetModulesByCategory(int $categoryId): array {
+    $stmt = getDB()->prepare('SELECT * FROM modules WHERE category_id = ? ORDER BY order_num');
+    $stmt->execute([$categoryId]);
+    return $stmt->fetchAll();
+}
+
+function dbGetModulesWithoutCategory(): array {
+    $stmt = getDB()->query('SELECT * FROM modules WHERE category_id IS NULL ORDER BY order_num');
+    return $stmt->fetchAll();
+}
+
+function dbGetUserCategoryAccess(string $userId, int $categoryId): bool {
+    $stmt = getDB()->prepare('SELECT id FROM user_categories WHERE user_id = ? AND category_id = ? AND (expires_at IS NULL OR expires_at > NOW())');
+    $stmt->execute([$userId, $categoryId]);
+    return (bool)$stmt->fetch();
+}
+
+function dbGetUserCategories(string $userId): array {
+    $stmt = getDB()->prepare('SELECT c.*, uc.expires_at as access_expires_at FROM user_categories uc JOIN categories c ON uc.category_id = c.id WHERE uc.user_id = ? AND (uc.expires_at IS NULL OR uc.expires_at > NOW()) AND c.enabled = 1 ORDER BY c.name');
+    $stmt->execute([$userId]);
+    return $stmt->fetchAll();
+}
+
+function dbGrantUserCategory(string $userId, int $categoryId, ?string $expiresAt = null): void {
+    $stmt = getDB()->prepare('INSERT INTO user_categories (user_id, category_id, expires_at) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE expires_at = VALUES(expires_at), granted_at = CURRENT_TIMESTAMP');
+    $stmt->execute([$userId, $categoryId, $expiresAt]);
+}
+
+function dbRevokeUserCategory(string $userId, int $categoryId): void {
+    $stmt = getDB()->prepare('DELETE FROM user_categories WHERE user_id = ? AND category_id = ?');
+    $stmt->execute([$userId, $categoryId]);
+}
+
+function dbGrantAllCategories(string $userId, ?string $expiresAt = null): void {
+    $cats = dbGetCategories();
+    foreach ($cats as $c) {
+        dbGrantUserCategory($userId, $c['id'], $expiresAt);
+    }
 }
 
 function dbGetQuestions(int $moduleId, int $limit = 0): array {
